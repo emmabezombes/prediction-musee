@@ -160,6 +160,15 @@ df_modele = df_modele.merge(
     how="left"
 )
 
+# On choisit la région issue de musees (region_y) comme colonne principale
+if "region_y" in df_modele.columns:
+    df_modele = df_modele.rename(columns={"region_y": "region"})
+    # On peut supprimer l'autre si on ne veut pas de doublon
+    df_modele = df_modele.drop(columns=["region_x"], errors="ignore")
+elif "region_x" in df_modele.columns:
+    # fallback au cas où
+    df_modele = df_modele.rename(columns={"region_x": "region"})
+
 print("Colonnes df_modele :")
 print(df_modele.columns.tolist())
 
@@ -176,4 +185,11 @@ print(
 
 print(f"\nTaille finale df_modele : {df_modele.shape}")
 
+# -------------------------------------------------------------------
+# 6. Sauvegarde
+# -------------------------------------------------------------------
 
+musees.to_csv(OUTPUT_DIR / "musees.csv", index=False)
+frequentation.to_csv(OUTPUT_DIR / "frequentation_annuelle.csv", index=False)
+freq_long.to_csv(OUTPUT_DIR / "frequentation_excel_long.csv", index=False)
+df_modele.to_csv(OUTPUT_DIR / "df_modele_musees.csv", index=False)
