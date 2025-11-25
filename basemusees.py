@@ -160,6 +160,12 @@ df_modele = df_modele.merge(
     how="left"
 )
 
+print("Colonnes df_modele :")
+print(df_modele.columns.tolist())
+
+print("Colonnes liées à la région dans df_modele :")
+print([c for c in df_modele.columns if "region" in c.lower()])
+
 print("Aperçu df_modele :")
 print(
     df_modele[
