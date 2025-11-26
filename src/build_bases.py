@@ -40,7 +40,7 @@ def build_dim_musees(museo_raw: pd.DataFrame) -> pd.DataFrame:
         "Coordonnees": "coordonnees",
     })
 
-    # 🔥 SUPPRESSION DES COLONNES TROP LOURDES / INUTILES
+    
     cols_to_drop = [
         "Histoire",
         "Atout",
@@ -75,7 +75,11 @@ def build_dim_musees(museo_raw: pd.DataFrame) -> pd.DataFrame:
 def build_fact_frequentation(ent_raw: pd.DataFrame) -> pd.DataFrame:
     """Construit la table de fréquentation annuelle (ENTREES...)."""
     freq = ent_raw.copy()
-
+    
+    col_to_drop = [
+        "lien_avec"
+    ]
+    freq = freq.drop(columns=[c for c in col_to_drop if c in freq.columns], errors="ignore")
     freq = freq.rename(columns={
         "IDPatrimostat": "id_patrimostat",
         "IDMuseofile": "id_museofile",
