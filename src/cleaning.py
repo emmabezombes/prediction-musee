@@ -16,6 +16,10 @@ def clean_and_enrich(df: pd.DataFrame) -> pd.DataFrame:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors="coerce")
 
+    #suppression de la colonne nom_officiel si doublon 
+    if "nom_du_musee" in df.columns:
+        df = df.drop(columns=["nom_du_musee"])
+
     # Imputation simple : si total_frequentation manque, on prend total
     if "total_frequentation" in df.columns and "total" in df.columns:
         df["total_frequentation"] = df["total_frequentation"].fillna(df["total"])
@@ -26,9 +30,18 @@ def clean_and_enrich(df: pd.DataFrame) -> pd.DataFrame:
         df["annee_creation"] = pd.to_numeric(df["annee_creation"], errors="coerce")
 
         df["age_musee"] = df["annee"] - df["annee_creation"]
-
+        
         # On met à NaN les âges négatifs ou aberrants
         df.loc[df["age_musee"] < 0, "age_musee"] = np.nan
+        
+        # Vérification des NaN sur age_musee
+        nb_nan_age = df["age_musee"].isna().sum()
+        print(f"NaN dans age_musee : {nb_nan_age}")
+
+        # Indicateur 
+        df["age_musee_missing"] = df["age_musee"].isna().astype(int)
+
+        
 
     
     # Lags et croissance
