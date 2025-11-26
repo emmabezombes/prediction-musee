@@ -1,5 +1,3 @@
-# src/cleaning.py
-
 import numpy as np
 import pandas as pd
 
@@ -21,12 +19,18 @@ def clean_and_enrich(df: pd.DataFrame) -> pd.DataFrame:
     # Imputation simple : si total_frequentation manque, on prend total
     if "total_frequentation" in df.columns and "total" in df.columns:
         df["total_frequentation"] = df["total_frequentation"].fillna(df["total"])
+    
+    # Âge du musée : on s'assure que annee et annee_creation sont numériques
+    if "annee_creation" in df.columns and "annee" in df.columns:
+        df["annee"] = pd.to_numeric(df["annee"], errors="coerce")
+        df["annee_creation"] = pd.to_numeric(df["annee_creation"], errors="coerce")
 
-    # Âge du musée
-    if "annee_creation" in df.columns:
         df["age_musee"] = df["annee"] - df["annee_creation"]
+
+        # On met à NaN les âges négatifs ou aberrants
         df.loc[df["age_musee"] < 0, "age_musee"] = np.nan
 
+    
     # Lags et croissance
     df = df.sort_values(["id_museofile", "annee"])
     if "total" in df.columns:

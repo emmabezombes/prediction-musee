@@ -1,5 +1,3 @@
-# basemusees.py
-
 from src.chemins import OUTPUT_DIR
 from src.build_bases import (
     load_raw_data,
