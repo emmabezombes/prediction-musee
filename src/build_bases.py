@@ -4,7 +4,7 @@ from typing import Tuple
 import numpy as np
 import pandas as pd
 
-from src.chemins import DATA_DIR
+from .chemins import DATA_DIR
 
 
 def load_raw_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
@@ -40,6 +40,18 @@ def build_dim_musees(museo_raw: pd.DataFrame) -> pd.DataFrame:
         "Coordonnees": "coordonnees",
     })
 
+    # 🔥 SUPPRESSION DES COLONNES TROP LOURDES / INUTILES
+    cols_to_drop = [
+        "Histoire",
+        "Atout",
+        "Themes",
+        "Artiste",
+        "Personnage_phare",
+        "Interet"
+    ]
+    musees = musees.drop(columns=[c for c in cols_to_drop if c in musees.columns], errors="ignore")
+
+    # Séparation lat/lon
     def split_coords(coord_str):
         if pd.isna(coord_str):
             return pd.Series({"latitude": np.nan, "longitude": np.nan})
@@ -56,10 +68,8 @@ def build_dim_musees(museo_raw: pd.DataFrame) -> pd.DataFrame:
         coords = musees["coordonnees"].apply(split_coords)
         musees = pd.concat([musees, coords], axis=1)
 
-    print("\nAperçu dim_musees :")
-    print(musees[["id_museofile", "nom_officiel", "region"]].head())
-
     return musees
+
 
 
 def build_fact_frequentation(ent_raw: pd.DataFrame) -> pd.DataFrame:
