@@ -11,7 +11,7 @@ def load_raw_data() -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Charge les 3 fichiers bruts depuis le dossier data/."""
     freq_path = DATA_DIR / "frequentation-totale-mdf-2001-a-2016-data-def9.xlsx"
     entrees_path = DATA_DIR / "ENTREES_ET_CATEGORIES_DE_PUBLIC-2.csv"
-    museo_path = DATA_DIR / "museofile (1).csv"  # ton vrai fichier
+    museo_path = DATA_DIR / "museofile (1).csv"  
 
     print("Chargement des données brutes...")
     freq_raw = pd.read_excel(freq_path)

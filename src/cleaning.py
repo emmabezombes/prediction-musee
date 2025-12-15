@@ -47,13 +47,21 @@ def clean_and_enrich(df: pd.DataFrame) -> pd.DataFrame:
     
     # Lags et croissance
     df = df.sort_values(["id_museofile", "annee"])
-    if "total" in df.columns:
-        df["total_t_1"] = df.groupby("id_museofile")["total"].shift(1)
-        df["croissance_total"] = (df["total"] - df["total_t_1"]) / df["total_t_1"]
+
+    df["total_t_1"] = df.groupby("id_museofile")["total"].shift(1)
+
+    df["croissance_total"] = np.where(
+        df["total_t_1"] > 0,
+        (df["total"] - df["total_t_1"]) / df["total_t_1"],
+        np.nan
+    )
+
+    df["croissance_total"].replace([np.inf, -np.inf], np.nan, inplace=True)
+
     
     # Vérification NaN total_t_1
     nb_nan_t1 = df["total_t_1"].isna().sum()
-    print(f"NaN dans total_t_1 : {nb_nan_t1}")
+    print(f"NaN dans total_t_1 : {nb_nan_t1}")#changer cette fonction pr que ça divise pas par zéro
     # Vérification NaN sur croissance_total
     nb_nan_croiss = df["croissance_total"].isna().sum()
     print(f"NaN dans croissance_total : {nb_nan_croiss}")
