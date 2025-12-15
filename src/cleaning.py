@@ -42,13 +42,18 @@ def clean_and_enrich(df: pd.DataFrame) -> pd.DataFrame:
         df["age_musee_missing"] = df["age_musee"].isna().astype(int)
 
         
-
-    
-    # Lags et croissance
+   # Lags et croissance
     df = df.sort_values(["id_museofile", "annee"])
-    if "total" in df.columns:
-        df["total_t_1"] = df.groupby("id_museofile")["total"].shift(1)
-        df["croissance_total"] = (df["total"] - df["total_t_1"]) / df["total_t_1"]
+
+    df["total_t_1"] = df.groupby("id_museofile")["total"].shift(1)
+
+    df["croissance_total"] = np.where(
+        df["total_t_1"] > 0,
+        (df["total"] - df["total_t_1"]) / df["total_t_1"],
+        np.nan
+    )
+
+    df["croissance_total"].replace([np.inf, -np.inf], np.nan, inplace=True)
 
     # Indicateur de présence de données Excel
     df["has_excel"] = df["total_frequentation"].notna().astype(int)
