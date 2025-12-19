@@ -43,17 +43,26 @@ def clean_and_enrich(df: pd.DataFrame) -> pd.DataFrame:
 
         
    # Lags et croissance
-    df = df.sort_values(["id_museofile", "annee"])
+    # On prépare une table avec les données de l'année précédente
+    df_lag = df[["id_museofile", "annee", "total"]].copy()
+    
+    # On ajoute 1 à l'année : la donnée de x  servira pour l'année x+1 du tableau principal
+    df_lag["annee"] = df_lag["annee"] + 1 
+    df_lag = df_lag.rename(columns={"total": "total_t_1"})
+    
+    # On fusionne sur (id_museofile, annee)
+    df = df.merge(df_lag, on=["id_museofile", "annee"], how="left")
 
-    df["total_t_1"] = df.groupby("id_museofile")["total"].shift(1)
-
+    # --- Calcul de la croissance ---
+    # On utilise np.where pour gérer la division par zéro proprement
     df["croissance_total"] = np.where(
-        df["total_t_1"] > 0,
+        (df["total_t_1"] > 0) & (df["total_t_1"].notna()),
         (df["total"] - df["total_t_1"]) / df["total_t_1"],
         np.nan
     )
-
-    df["croissance_total"].replace([np.inf, -np.inf], np.nan, inplace=True)
+    
+    # Nettoyage des infinis résiduels (cas rares)
+    df["croissance_total"] = df["croissance_total"].replace([np.inf, -np.inf], np.nan)
 
     # Indicateur de présence de données Excel
     df["has_excel"] = df["total_frequentation"].notna().astype(int)
