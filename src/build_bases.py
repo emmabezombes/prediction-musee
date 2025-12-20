@@ -96,9 +96,29 @@ def build_fact_frequentation(ent_raw: pd.DataFrame) -> pd.DataFrame:
         if col in freq.columns:
             freq[col] = pd.to_numeric(freq[col], errors="coerce")
 
+    # 1. Calcul sécurisé des ratios
+    # On évite la division par zéro en remplaçant les totaux de 0 par NaN temporairement ou en gérant l'exception
+    # Ici, on laisse pandas gérer, mais on nettoie après.
+    
     freq["part_gratuit"] = freq["gratuit"] / freq["total"]
     freq["part_scolaires"] = freq["scolaires"] / freq["total"]
     freq["part_individuels"] = freq["individuel"] / freq["total"]
+
+    # 2. Nettoyage des divisions par zéro (Infini -> 0 ou NaN)
+    cols_ratios = ["part_gratuit", "part_scolaires", "part_individuels"]
+    freq[cols_ratios] = freq[cols_ratios].replace([np.inf, -np.inf], np.nan)
+
+    # 3. Plafonnement à 100% (Correction des données aberrantes)
+    # Si le ratio dépasse 1, on le ramène à 1 (ou on supprime la ligne plus tard)
+    for col in cols_ratios:
+        # Option A : On plafonne à 1 (100%)
+        mask_sup_1 = freq[col] > 1
+        if mask_sup_1.sum() > 0:
+            print(f"Attention : {mask_sup_1.sum()} valeurs > 1 détectées dans {col}. Plafonnées à 1.")
+            freq.loc[mask_sup_1, col] = 1.0
+            
+        # Option B : On remplit les trous (NaN) par 0 si c'est pertinent
+        freq[col] = freq[col].fillna(0)
 
     freq = freq.sort_values(["id_patrimostat", "annee"])
     freq = freq.drop_duplicates(subset=["id_patrimostat", "annee"], keep="first")
