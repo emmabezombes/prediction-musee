@@ -20,9 +20,10 @@ def clean_and_enrich(df: pd.DataFrame) -> pd.DataFrame:
     if "nom_du_musee" in df.columns:
         df = df.drop(columns=["nom_du_musee"])
 
-    # Imputation simple : si total_frequentation manque, on prend total
+    # Imputation simple : si total manque, on prend total_frequentation
     if "total_frequentation" in df.columns and "total" in df.columns:
-        df["total_frequentation"] = df["total_frequentation"].fillna(df["total"])
+        # C'est cette ligne qui sauve tes données manquantes :
+        df["total"] = df["total"].fillna(df["total_frequentation"])
     
     # Âge du musée : on s'assure que annee et annee_creation sont numériques
     if "annee_creation" in df.columns and "annee" in df.columns:
