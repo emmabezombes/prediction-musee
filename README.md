@@ -55,5 +55,3 @@ Pour reproduire l'environnement de développement, veuillez installer les dépen
 ```bash
 pip install -r requirements.txt
 
-```bash
-pip install -r requirements.txt
