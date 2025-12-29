@@ -8,7 +8,7 @@ Le secteur culturel, et plus particulièrement les musées, fait face à des enj
 
 La fréquentation d'un musée n'est pas seulement un chiffre comptable ; c'est le reflet de l'attractivité d'un territoire et de la pertinence d'une collection. Si des institutions comme le Louvre semblent hors normes, la grande majorité des 1 200 musées français obéit à des dynamiques que l'on peut tenter de modéliser.
 
-L'objectif de ce projet est de construire des outils d'analyse capables non seulement de prévoir les flux de visiteurs, mais aussi de comprendre les facteurs déterminants du succès. Nous avons ainsi cherché à opposer une vision comptable (prévision budgétaire) à une vision structurelle (analyse de l'offre et du territoire).
+L'objectif de ce projet est de construire des outils d'analyse capables non seulement de prévoir les flux de visiteurs, mais aussi de comprendre les facteurs déterminants du succès. 
 
 ## Problématique
 
