@@ -23,7 +23,7 @@ Le code est réparti en 5 notebooks pour faciliter la lecture et la maintenance.
 1.  `00_plan_et_intro.ipynb` : Introduction, définitions et plan détaillé.
 2.  `01_construction_base.ipynb` : Nettoyage des données (Data Cleaning) et Feature Engineering.
 3.  `02_stat_desc.ipynb` : Statistiques descriptives et visualisations.
-4.  `03_modelisation.ipynb` : Entraînement des modèles (Lasso et Random Forest).
+4.  `03_modelisation.ipynb` : Régressions univariées et entraînement des modèles (Lasso et Random Forest).
 5.  `04_conclusion.ipynb` : Analyse des résultats et bilan.
 
 ## Modèles utilisés
